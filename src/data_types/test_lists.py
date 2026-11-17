@@ -379,3 +379,45 @@ def test_list_sorting():
     # Items that cannot be compared with each other raise a TypeError.
     with pytest.raises(TypeError):
         sorted([3, 'three', 1])
+
+
+def test_list_slicing_with_step():
+    """Slicing with a step.
+
+    A slice can take a third value, the step: list[start:stop:step]. The step says how many
+    positions to move each time. A negative step walks through the list backwards.
+    """
+
+    letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g']
+
+    # Take every second item, starting from the first one.
+    assert letters[::2] == ['a', 'c', 'e', 'g']
+
+    # Take every second item, starting from index 1.
+    assert letters[1::2] == ['b', 'd', 'f']
+
+    # Start, stop and step together: from index 1 up to (not including) index 6, every 2nd item.
+    assert letters[1:6:2] == ['b', 'd', 'f']
+
+    # A step of -1 returns a reversed copy of the list.
+    assert letters[::-1] == ['g', 'f', 'e', 'd', 'c', 'b', 'a']
+
+    # With a negative step, start must be after stop.
+    assert letters[5:1:-2] == ['f', 'd']
+
+    # Slicing never raises an IndexError, even when the indexes are out of range...
+    assert letters[5:100] == ['f', 'g']
+    assert letters[100:] == []
+
+    # ...but reading a single index that does not exist does.
+    with pytest.raises(IndexError):
+        assert letters[100]
+
+    # Assigning to a slice with a step replaces exactly those positions, so the new values
+    # must have the same length as the slice.
+    numbers = [0, 1, 2, 3, 4, 5]
+    numbers[::2] = [10, 20, 30]
+    assert numbers == [10, 1, 20, 3, 30, 5]
+
+    with pytest.raises(ValueError):
+        numbers[::2] = [1, 2]
