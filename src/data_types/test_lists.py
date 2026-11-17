@@ -336,3 +336,46 @@ def test_nested_list_comprehensions():
         (3, 7, 11),
         (4, 8, 12),
     ]
+
+
+def test_list_sorting():
+    """Sorting lists.
+
+    Python has two ways to sort a list. The list.sort() method sorts the list in place and
+    returns None, while the built-in sorted() function returns a new sorted list and leaves the
+    original list unchanged. Both accept the optional key and reverse arguments.
+    """
+
+    numbers = [5, 2, 9, 1, 7]
+
+    # sorted() returns a new list, and the original list is not changed.
+    sorted_numbers = sorted(numbers)
+    assert sorted_numbers == [1, 2, 5, 7, 9]
+    assert numbers == [5, 2, 9, 1, 7]
+
+    # list.sort() changes the list itself and returns None.
+    assert numbers.sort() is None
+    assert numbers == [1, 2, 5, 7, 9]
+
+    # The reverse argument sorts in descending order.
+    numbers.sort(reverse=True)
+    assert numbers == [9, 7, 5, 2, 1]
+
+    # The key argument is a function that is applied to each item before comparing.
+    # Here the words are sorted by their length instead of alphabetically.
+    words = ['banana', 'kiwi', 'apple', 'fig']
+    assert sorted(words, key=len) == ['fig', 'kiwi', 'apple', 'banana']
+
+    # Sorting is stable: items with equal keys keep their original order.
+    # 'kiwi' and 'pear' both have 4 letters, so 'kiwi' stays before 'pear'.
+    fruits = ['kiwi', 'banana', 'pear', 'fig']
+    assert sorted(fruits, key=len) == ['fig', 'kiwi', 'pear', 'banana']
+
+    # A list of tuples can be sorted by one of its fields by using a lambda as the key.
+    students = [('Sara', 85), ('Omar', 92), ('Lina', 78)]
+    by_grade = sorted(students, key=lambda student: student[1], reverse=True)
+    assert by_grade == [('Omar', 92), ('Sara', 85), ('Lina', 78)]
+
+    # Items that cannot be compared with each other raise a TypeError.
+    with pytest.raises(TypeError):
+        sorted([3, 'three', 1])
