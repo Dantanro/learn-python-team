@@ -62,3 +62,44 @@ def test_if_multiple_elif_branches():
     # A score just below a boundary falls through to the next branch.
     assert get_grade(89) == 'B'
     assert get_grade(59) == 'F'
+
+
+def test_nested_if_statements():
+    """Nested IF statements
+
+    An if statement can be placed inside another if statement. The inner condition is only
+    checked when the outer condition is true.
+    """
+
+    def get_ticket_price(age, is_weekend):
+        # Children under 3 always go free, so the day is never checked for them.
+        if age < 3:
+            return 0
+        elif age < 18:
+            # Children pay more on weekends.
+            if is_weekend:
+                return 8
+            else:
+                return 6
+        else:
+            # Adults also pay more on weekends, and seniors get a discount on any day.
+            if age >= 65:
+                return 7
+            elif is_weekend:
+                return 15
+            else:
+                return 12
+
+    # The outer condition alone decides the price for toddlers.
+    assert get_ticket_price(2, is_weekend=True) == 0
+    assert get_ticket_price(2, is_weekend=False) == 0
+
+    # For children and adults, the nested condition on the day changes the price.
+    assert get_ticket_price(10, is_weekend=True) == 8
+    assert get_ticket_price(10, is_weekend=False) == 6
+    assert get_ticket_price(30, is_weekend=True) == 15
+    assert get_ticket_price(30, is_weekend=False) == 12
+
+    # Seniors are matched by the first nested branch before the day is checked.
+    assert get_ticket_price(70, is_weekend=True) == 7
+    assert get_ticket_price(70, is_weekend=False) == 7
