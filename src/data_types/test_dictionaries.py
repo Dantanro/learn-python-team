@@ -77,3 +77,25 @@ def test_dictionary():
     assert dictionary_for_string_keys['sape'] == 4139
     assert dictionary_for_string_keys['guido'] == 4127
     assert dictionary_for_string_keys['jack'] == 4098
+
+
+def test_dictionary_update_and_remove():
+    """Dictionary update() and pop()"""
+
+    fruits_dictionary = {
+        'cherry': 'red',
+        'apple': 'green',
+        'banana': 'yellow',
+    }
+
+    # The update() method changes the values of existing keys and adds keys that are missing.
+    fruits_dictionary.update({'apple': 'red', 'pineapple': 'yellow'})
+    assert fruits_dictionary['apple'] == 'red'
+    assert fruits_dictionary['pineapple'] == 'yellow'
+    assert len(fruits_dictionary) == 4
+
+    # The pop() method removes the given key and returns its value.
+    removed_color = fruits_dictionary.pop('banana')
+    assert removed_color == 'yellow'
+    assert 'banana' not in fruits_dictionary
+    assert list(fruits_dictionary) == ['cherry', 'apple', 'pineapple']
