@@ -29,6 +29,15 @@ without launching them.
 
 > _You might also be interested in 🤖 [Interactive Machine Learning Experiments](https://github.com/trekhleb/machine-learning-experiments)_
 
+## About This Team Copy
+
+This is COMP 354 Team 28's copy of [trekhleb/learn-python](https://github.com/trekhleb/learn-python),
+used for the SCM and Git assignment. Each team member works in their own fork and sends changes
+back here through pull requests, which are reviewed by another team member before they are merged.
+
+`requirements.txt` here pins pytest 9.2.0 instead of 3.7.2, so the tests also run on Python 3.12
+and newer.
+
 ## How to Use This Repository
 
 Each Python script in this repository has the following structure:
