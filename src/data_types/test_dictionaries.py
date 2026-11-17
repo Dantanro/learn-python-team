@@ -99,3 +99,28 @@ def test_dictionary_update_and_remove():
     assert removed_color == 'yellow'
     assert 'banana' not in fruits_dictionary
     assert list(fruits_dictionary) == ['cherry', 'apple', 'pineapple']
+
+
+def test_dictionary_get_and_setdefault():
+    """Dictionary get() and setdefault()"""
+
+    fruits_dictionary = {
+        'cherry': 'red',
+        'apple': 'green',
+    }
+
+    # The get() method returns the default value instead of raising KeyError when the key
+    # is missing. The dictionary itself is not changed.
+    assert fruits_dictionary.get('banana', 'unknown') == 'unknown'
+    assert fruits_dictionary.get('banana') is None
+    assert 'banana' not in fruits_dictionary
+
+    # The setdefault() method inserts the key with the default value if the key is missing,
+    # and returns that value.
+    assert fruits_dictionary.setdefault('banana', 'yellow') == 'yellow'
+    assert fruits_dictionary['banana'] == 'yellow'
+
+    # If the key already exists, setdefault() does not overwrite it and returns the existing value.
+    assert fruits_dictionary.setdefault('apple', 'red') == 'green'
+    assert fruits_dictionary['apple'] == 'green'
+    assert list(fruits_dictionary) == ['cherry', 'apple', 'banana']
