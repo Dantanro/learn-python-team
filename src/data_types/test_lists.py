@@ -405,6 +405,10 @@ def test_list_slicing_with_step():
     # With a negative step, start must be after stop.
     assert letters[5:1:-2] == ['f', 'd']
 
+    # A step of zero is not allowed and raises a ValueError.
+    with pytest.raises(ValueError):
+        assert letters[::0]
+
     # Slicing never raises an IndexError, even when the indexes are out of range...
     assert letters[5:100] == ['f', 'g']
     assert letters[100:] == []
