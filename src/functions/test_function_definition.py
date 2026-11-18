@@ -121,3 +121,45 @@ def test_function_definition():
     greet_with_closure = compose_greet_func_with_closure('John')
 
     assert greet_with_closure() == 'Hello there, John!'
+
+
+def test_function_parameters_and_return_values():
+    """Parameters, default values and return values
+
+    A parameter can be given a default value in the function definition. The caller can then
+    leave that argument out, or pass it by name as a keyword argument. A function can also return
+    several values at once, which Python packs into a tuple.
+    """
+
+    def calculate_price(price, quantity=1, discount=0.0):
+        # quantity and discount have default values, so only price is required.
+        return price * quantity * (1 - discount)
+
+    # Only the required argument is passed, so the default values are used.
+    assert calculate_price(10) == 10
+
+    # Arguments can be passed by position, in the order of the parameters.
+    assert calculate_price(10, 3) == 30
+
+    # Keyword arguments can skip a default value and be passed in any order.
+    assert calculate_price(10, discount=0.5) == 5
+    assert calculate_price(discount=0.5, quantity=4, price=10) == 20
+
+    def get_min_max(numbers):
+        # Returning two values separated by a comma returns them as one tuple.
+        return min(numbers), max(numbers)
+
+    result = get_min_max([4, 9, 1, 7])
+    assert result == (1, 9)
+    assert isinstance(result, tuple)
+
+    # The returned tuple can be unpacked straight into separate variables.
+    smallest, largest = get_min_max([4, 9, 1, 7])
+    assert smallest == 1
+    assert largest == 9
+
+    def do_nothing():
+        # A function with no return statement returns None.
+        pass
+
+    assert do_nothing() is None
