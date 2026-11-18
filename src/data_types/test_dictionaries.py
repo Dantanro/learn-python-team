@@ -20,6 +20,8 @@ Placing a comma-separated list of key:value pairs within the braces adds initial
 to the dictionary; this is also the way dictionaries are written on output.
 """
 
+import pytest
+
 
 def test_dictionary():
     """Dictionary"""
@@ -98,6 +100,15 @@ def test_dictionary_update_and_remove():
     removed_color = fruits_dictionary.pop('banana')
     assert removed_color == 'yellow'
     assert 'banana' not in fruits_dictionary
+    assert list(fruits_dictionary) == ['cherry', 'apple', 'pineapple']
+
+    # Calling pop() with a key that is missing raises a KeyError.
+    with pytest.raises(KeyError):
+        fruits_dictionary.pop('mango')
+
+    # If a default value is given, pop() returns it instead of raising an exception,
+    # the same idea as get().
+    assert fruits_dictionary.pop('mango', None) is None
     assert list(fruits_dictionary) == ['cherry', 'apple', 'pineapple']
 
 
