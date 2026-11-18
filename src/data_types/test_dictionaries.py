@@ -20,6 +20,8 @@ Placing a comma-separated list of key:value pairs within the braces adds initial
 to the dictionary; this is also the way dictionaries are written on output.
 """
 
+import pytest
+
 
 def test_dictionary():
     """Dictionary"""
@@ -77,3 +79,59 @@ def test_dictionary():
     assert dictionary_for_string_keys['sape'] == 4139
     assert dictionary_for_string_keys['guido'] == 4127
     assert dictionary_for_string_keys['jack'] == 4098
+
+
+def test_dictionary_update_and_remove():
+    """Dictionary update() and pop()"""
+
+    fruits_dictionary = {
+        'cherry': 'red',
+        'apple': 'green',
+        'banana': 'yellow',
+    }
+
+    # The update() method changes the values of existing keys and adds keys that are missing.
+    fruits_dictionary.update({'apple': 'red', 'pineapple': 'yellow'})
+    assert fruits_dictionary['apple'] == 'red'
+    assert fruits_dictionary['pineapple'] == 'yellow'
+    assert len(fruits_dictionary) == 4
+
+    # The pop() method removes the given key and returns its value.
+    removed_color = fruits_dictionary.pop('banana')
+    assert removed_color == 'yellow'
+    assert 'banana' not in fruits_dictionary
+    assert list(fruits_dictionary) == ['cherry', 'apple', 'pineapple']
+
+    # Calling pop() with a key that is missing raises a KeyError.
+    with pytest.raises(KeyError):
+        fruits_dictionary.pop('mango')
+
+    # If a default value is given, pop() returns it instead of raising an exception,
+    # the same idea as get().
+    assert fruits_dictionary.pop('mango', None) is None
+    assert list(fruits_dictionary) == ['cherry', 'apple', 'pineapple']
+
+
+def test_dictionary_get_and_setdefault():
+    """Dictionary get() and setdefault()"""
+
+    fruits_dictionary = {
+        'cherry': 'red',
+        'apple': 'green',
+    }
+
+    # The get() method returns the default value instead of raising KeyError when the key
+    # is missing. The dictionary itself is not changed.
+    assert fruits_dictionary.get('banana', 'unknown') == 'unknown'
+    assert fruits_dictionary.get('banana') is None
+    assert 'banana' not in fruits_dictionary
+
+    # The setdefault() method inserts the key with the default value if the key is missing,
+    # and returns that value.
+    assert fruits_dictionary.setdefault('banana', 'yellow') == 'yellow'
+    assert fruits_dictionary['banana'] == 'yellow'
+
+    # If the key already exists, setdefault() does not overwrite it and returns the existing value.
+    assert fruits_dictionary.setdefault('apple', 'red') == 'green'
+    assert fruits_dictionary['apple'] == 'green'
+    assert list(fruits_dictionary) == ['cherry', 'apple', 'banana']
