@@ -336,3 +336,92 @@ def test_nested_list_comprehensions():
         (3, 7, 11),
         (4, 8, 12),
     ]
+
+
+def test_list_sorting():
+    """Sorting lists.
+
+    Python has two ways to sort a list. The list.sort() method sorts the list in place and
+    returns None, while the built-in sorted() function returns a new sorted list and leaves the
+    original list unchanged. Both accept the optional key and reverse arguments.
+    """
+
+    numbers = [5, 2, 9, 1, 7]
+
+    # sorted() returns a new list, and the original list is not changed.
+    sorted_numbers = sorted(numbers)
+    assert sorted_numbers == [1, 2, 5, 7, 9]
+    assert numbers == [5, 2, 9, 1, 7]
+
+    # list.sort() changes the list itself and returns None.
+    assert numbers.sort() is None
+    assert numbers == [1, 2, 5, 7, 9]
+
+    # The reverse argument sorts in descending order.
+    numbers.sort(reverse=True)
+    assert numbers == [9, 7, 5, 2, 1]
+
+    # The key argument is a function that is applied to each item before comparing.
+    # Here the words are sorted by their length instead of alphabetically.
+    words = ['banana', 'kiwi', 'apple', 'fig']
+    assert sorted(words, key=len) == ['fig', 'kiwi', 'apple', 'banana']
+
+    # Sorting is stable: items with equal keys keep their original order.
+    # 'kiwi' and 'pear' both have 4 letters, so 'kiwi' stays before 'pear'.
+    fruits = ['kiwi', 'banana', 'pear', 'fig']
+    assert sorted(fruits, key=len) == ['fig', 'kiwi', 'pear', 'banana']
+
+    # A list of tuples can be sorted by one of its fields by using a lambda as the key.
+    students = [('Sara', 85), ('Omar', 92), ('Lina', 78)]
+    by_grade = sorted(students, key=lambda student: student[1], reverse=True)
+    assert by_grade == [('Omar', 92), ('Sara', 85), ('Lina', 78)]
+
+    # Items that cannot be compared with each other raise a TypeError.
+    with pytest.raises(TypeError):
+        sorted([3, 'three', 1])
+
+
+def test_list_slicing_with_step():
+    """Slicing with a step.
+
+    A slice can take a third value, the step: list[start:stop:step]. The step says how many
+    positions to move each time. A negative step walks through the list backwards.
+    """
+
+    letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g']
+
+    # Take every second item, starting from the first one.
+    assert letters[::2] == ['a', 'c', 'e', 'g']
+
+    # Take every second item, starting from index 1.
+    assert letters[1::2] == ['b', 'd', 'f']
+
+    # Start, stop and step together: from index 1 up to (not including) index 6, every 2nd item.
+    assert letters[1:6:2] == ['b', 'd', 'f']
+
+    # A step of -1 returns a reversed copy of the list.
+    assert letters[::-1] == ['g', 'f', 'e', 'd', 'c', 'b', 'a']
+
+    # With a negative step, start must be after stop.
+    assert letters[5:1:-2] == ['f', 'd']
+
+    # A step of zero is not allowed and raises a ValueError.
+    with pytest.raises(ValueError):
+        assert letters[::0]
+
+    # Slicing never raises an IndexError, even when the indexes are out of range...
+    assert letters[5:100] == ['f', 'g']
+    assert letters[100:] == []
+
+    # ...but reading a single index that does not exist does.
+    with pytest.raises(IndexError):
+        assert letters[100]
+
+    # Assigning to a slice with a step replaces exactly those positions, so the new values
+    # must have the same length as the slice.
+    numbers = [0, 1, 2, 3, 4, 5]
+    numbers[::2] = [10, 20, 30]
+    assert numbers == [10, 1, 20, 3, 30, 5]
+
+    with pytest.raises(ValueError):
+        numbers[::2] = [1, 2]
