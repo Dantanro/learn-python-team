@@ -8,6 +8,8 @@ parenthesized list of formal parameters. The statements that form the body of th
 the next line, and must be indented.
 """
 
+import pytest
+
 
 def fibonacci_function_example(number_limit):
     """Generate a Fibonacci series up to number_limit.
@@ -163,3 +165,47 @@ def test_function_parameters_and_return_values():
         pass
 
     assert do_nothing() is None
+
+
+def test_function_input_validation():
+    """Input validation inside a function
+
+    A function can check its arguments before using them. When an argument is not valid, the
+    function raises an exception instead of returning a wrong result. pytest.raises checks that
+    the expected exception is raised.
+    """
+
+    def divide(dividend, divisor):
+        # Refuse a zero divisor with a clear message instead of failing later.
+        if divisor == 0:
+            raise ValueError('divisor must not be zero')
+        return dividend / divisor
+
+    # Valid input returns the result as usual.
+    assert divide(10, 4) == 2.5
+
+    # Invalid input raises the ValueError, and match= checks its message.
+    with pytest.raises(ValueError, match='must not be zero'):
+        divide(10, 0)
+
+    def set_age(age):
+        # Check the type first, then the range, so each problem gets its own error.
+        if not isinstance(age, int):
+            raise TypeError('age must be a whole number')
+        if age < 0 or age > 150:
+            raise ValueError('age must be between 0 and 150')
+        return age
+
+    # The edges of the allowed range are valid.
+    assert set_age(0) == 0
+    assert set_age(150) == 150
+
+    # Values outside the range raise ValueError.
+    with pytest.raises(ValueError):
+        set_age(-1)
+    with pytest.raises(ValueError):
+        set_age(151)
+
+    # A value of the wrong type raises TypeError instead.
+    with pytest.raises(TypeError):
+        set_age('twenty')
