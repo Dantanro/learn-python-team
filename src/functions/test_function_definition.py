@@ -8,6 +8,8 @@ parenthesized list of formal parameters. The statements that form the body of th
 the next line, and must be indented.
 """
 
+import pytest
+
 
 def fibonacci_function_example(number_limit):
     """Generate a Fibonacci series up to number_limit.
@@ -121,3 +123,89 @@ def test_function_definition():
     greet_with_closure = compose_greet_func_with_closure('John')
 
     assert greet_with_closure() == 'Hello there, John!'
+
+
+def test_function_parameters_and_return_values():
+    """Parameters, default values and return values
+
+    A parameter can be given a default value in the function definition. The caller can then
+    leave that argument out, or pass it by name as a keyword argument. A function can also return
+    several values at once, which Python packs into a tuple.
+    """
+
+    def calculate_price(price, quantity=1, discount=0.0):
+        # quantity and discount have default values, so only price is required.
+        return price * quantity * (1 - discount)
+
+    # Only the required argument is passed, so the default values are used.
+    assert calculate_price(10) == 10
+
+    # Arguments can be passed by position, in the order of the parameters.
+    assert calculate_price(10, 3) == 30
+
+    # Keyword arguments can skip a default value and be passed in any order.
+    assert calculate_price(10, discount=0.5) == 5
+    assert calculate_price(discount=0.5, quantity=4, price=10) == 20
+
+    def get_min_max(numbers):
+        # Returning two values separated by a comma returns them as one tuple.
+        return min(numbers), max(numbers)
+
+    result = get_min_max([4, 9, 1, 7])
+    assert result == (1, 9)
+    assert isinstance(result, tuple)
+
+    # The returned tuple can be unpacked straight into separate variables.
+    smallest, largest = get_min_max([4, 9, 1, 7])
+    assert smallest == 1
+    assert largest == 9
+
+    def do_nothing():
+        # A function with no return statement returns None.
+        pass
+
+    assert do_nothing() is None
+
+
+def test_function_input_validation():
+    """Input validation inside a function
+
+    A function can check its arguments before using them. When an argument is not valid, the
+    function raises an exception instead of returning a wrong result. pytest.raises checks that
+    the expected exception is raised.
+    """
+
+    def divide(dividend, divisor):
+        # Refuse a zero divisor with a clear message instead of failing later.
+        if divisor == 0:
+            raise ValueError('divisor must not be zero')
+        return dividend / divisor
+
+    # Valid input returns the result as usual.
+    assert divide(10, 4) == 2.5
+
+    # Invalid input raises the ValueError, and match= checks its message.
+    with pytest.raises(ValueError, match='must not be zero'):
+        divide(10, 0)
+
+    def set_age(age):
+        # Check the type first, then the range, so each problem gets its own error.
+        if not isinstance(age, int):
+            raise TypeError('age must be a whole number')
+        if age < 0 or age > 150:
+            raise ValueError('age must be between 0 and 150')
+        return age
+
+    # The edges of the allowed range are valid.
+    assert set_age(0) == 0
+    assert set_age(150) == 150
+
+    # Values outside the range raise ValueError.
+    with pytest.raises(ValueError):
+        set_age(-1)
+    with pytest.raises(ValueError):
+        set_age(151)
+
+    # A value of the wrong type raises TypeError instead.
+    with pytest.raises(TypeError):
+        set_age('twenty')
